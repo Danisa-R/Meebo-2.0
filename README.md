@@ -1,3 +1,3 @@
 # Meebo-2.0
 
-re-make of the meebo chat website me and my nerd friends used to use when we were 13
+re-make of the meebo chat website my nerd friends and I used to talk on when we were 13
