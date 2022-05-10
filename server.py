@@ -25,7 +25,7 @@ def handle(client):
             message = client.recv(1024)
             broadcast(message)
         except:
-            index = clients.index(client) #need index to remove client from list
+            index = clients.index(client) # need index to remove client from list
             clients.remove(client)
             client.close()
             nickname = nicknames[index]
@@ -33,13 +33,23 @@ def handle(client):
             nicknames.remove(nickname)
             break
 
-#receive main method
+#main method
 def receive():
     while True:
         client, address = server.accept() 
-        print(f'Connected with {str(address)}')
+        print(f'Connected with {str(address)}') 
 
-        client.send('NICK'.encode('ascii'))
-        nickname = client.recv(1024).decode('ascii')
+        client.send('NICK'.encode('ascii')) 
+        nickname = client.recv(1024).decode('ascii') 
         nicknames.append(nickname)
         clients.append(client)
+
+        print(f'Nickname of client is: {nickname}')
+        broadcast(f'{nickname} joined the chat!'.encode('ascii')) # every client knows about the new client
+        client.send('Connected to the server'.encode('ascii'))
+
+        #run one thread for each client connected
+        thread = threading.Thread(target=handle, args=(client,))
+        thread.start()
+
+receive()
