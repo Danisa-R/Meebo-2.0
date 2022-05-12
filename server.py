@@ -3,49 +3,49 @@ from ssl import CHANNEL_BINDING_TYPES
 import threading
 
 host = '127.0.0.1'
-port = 55555
+port = 55557
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((host, port)) # server is bind or bound to localhost on port 55555 
+server.bind((host, port)) 
 server.listen() # server starts listening for incoming connections
 
-
 clients = []
-nicknames = []
+usernames = []
 
-#broadcast message to clients connected to server
+# broadcast message to clients connected to server
 def broadcast(message):
     for client in clients:
         client.send(message)
 
-#handle method for client connections
+# handle method for client connections
 def handle(client):
     while True:
         try:
             message = client.recv(1024)
+            current_client = clients.index(client)
+            print(f'{usernames[current_client]}')
             broadcast(message)
         except:
-            index = clients.index(client) # need index to remove client from list
             clients.remove(client)
             client.close()
-            nickname = nicknames[index]
-            broadcast(f'{nickname} left the chat!'.encode('ascii'))
-            nicknames.remove(nickname)
+            username = usernames[clients.index(client)]
+            broadcast(f'{username} left the chat!'.encode('ascii'))
+            usernames.pop(username)
             break
 
-#main method
+# main method
 def receive():
     while True:
-        client, address = server.accept() 
+        client, address = server.accept() # client socket & address socket accepts
         print(f'Connected with {str(address)}') 
 
-        client.send('NICK'.encode('ascii')) 
-        nickname = client.recv(1024).decode('ascii') 
-        nicknames.append(nickname)
+        client.send('USER'.encode('utf-8')) 
+        username = client.recv(1024).decode('ascii') 
+        usernames.append(username)
         clients.append(client)
 
-        print(f'Nickname of client is: {nickname}')
-        broadcast(f'{nickname} joined the chat!'.encode('ascii')) # every client knows about the new client
+        print(f'Username of client is: {username}')
+        broadcast(f'{username} joined the chat!'.encode('ascii')) # every client knows about the new client
         client.send('Connected to the server'.encode('ascii'))
 
         #run one thread for each client connected
