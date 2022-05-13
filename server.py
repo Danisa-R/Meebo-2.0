@@ -3,7 +3,7 @@ from ssl import CHANNEL_BINDING_TYPES
 import threading
 
 host = '127.0.0.1'
-port = 55557
+port = 9090
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port)) 
