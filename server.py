@@ -3,7 +3,7 @@ from ssl import CHANNEL_BINDING_TYPES
 import threading
 
 host = '127.0.0.1'
-port = 9090
+port = 9091
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((host, port)) 
@@ -39,7 +39,7 @@ def receive():
         client, address = server.accept() # client socket & address socket accepts
         print(f'Connected with {str(address)}') 
 
-        client.send('NICK'.encode('utf-8')) 
+        client.send('NICK'.encode('ascii')) 
         nickname = client.recv(1024).decode('ascii') 
         nicknames.append(nickname)
         clients.append(client)
@@ -51,5 +51,5 @@ def receive():
         #run one thread for each client connected
         thread = threading.Thread(target=handle, args=(client,))
         thread.start()
-
+print("~~ Server is listening ~~~")
 receive()
